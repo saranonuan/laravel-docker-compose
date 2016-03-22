@@ -1,0 +1,25 @@
+version: '2'
+services:
+	sketchup-web:
+		image: dylanlindgren/docker-laravel-data
+		container_name: sketchup-web
+		volumes:
+			- ./:/data
+	sketchup-fpm:
+		image: dylanlindgren/docker-laravel-phpfpm
+		container_name: sketchup-fpm
+		privileged: true
+		depends_on:
+			- web-data
+		volumes_from:
+			- sketchup-web
+	sketchup-nginx:
+		image: dylanlindgren/docker-laravel-nginx
+		container_name: sketchup-nginx
+		privileged: true
+		depends_on:
+			- sketchup-fpm
+		links:
+			- sketchup-fpm
+		- ports:
+			- "80:80"
